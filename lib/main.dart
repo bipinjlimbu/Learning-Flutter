@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/parts/part1.dart';
+import '/parts/part2.dart';
 
 void main() {
-  runApp(MaterialApp(home: Scaffold(body: const Part1())));
+  runApp(MaterialApp(home: Scaffold(body: const Part2())));
 }
