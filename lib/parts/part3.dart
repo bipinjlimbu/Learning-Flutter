@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 20),
             if (_bmi != null)
               Text(
-                'Your BMI is: ${_bmi!.toStringAsFixed(2)}',
+                'Your BMI is: ${_bmi!.toStringAsFixed(2)} \n Category: ${getBMICategory(_bmi!)}',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               )
             else
@@ -108,20 +108,21 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             const SizedBox(height: 20),
-            if (_bmi != null)
-              Text(
-                _bmi! < 18.5
-                    ? 'You are underweight.'
-                    : _bmi! < 24.9
-                    ? 'You have a normal weight.'
-                    : _bmi! < 29.9
-                    ? 'You are overweight.'
-                    : 'You are obese.',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
           ],
         ),
       ),
     );
+  }
+}
+
+String getBMICategory(double bmi) {
+  if (bmi < 18.5) {
+    return 'Underweight';
+  } else if (bmi < 24.9) {
+    return 'Normal weight';
+  } else if (bmi < 29.9) {
+    return 'Overweight';
+  } else {
+    return 'Obese';
   }
 }
