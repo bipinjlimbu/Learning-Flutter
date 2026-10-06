@@ -26,7 +26,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   double? _bmi;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,88 +45,120 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(37.0),
         color: Colors.cyanAccent,
         width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Welcome to the BMI Calculator!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _weightController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Enter your weight (kg)',
-                hintText: 'e.g. 70',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Welcome to the BMI Calculator!',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _heightController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Enter your height (cm)',
-                hintText: 'e.g. 175',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  final double? weight = double.tryParse(
-                    _weightController.text,
-                  );
-                  final double? height = double.tryParse(
-                    _heightController.text,
-                  );
 
-                  if (weight == null || height == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        duration: const Duration(seconds: 2),
-                        content: Text(
-                          'Please enter valid numbers for weight and height.',
-                        ),
-                      ),
-                    );
-                    return;
+              const SizedBox(height: 20),
+
+              TextFormField(
+                controller: _weightController,
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  var regex = RegExp(r'^\d+(\.\d+)?$');
+
+                  if (value == null ||
+                      value.isEmpty ||
+                      !regex.hasMatch(value)) {
+                    return 'Please enter a valid number for weight.';
                   }
 
-                  if (weight > 0 && height > 0) {
-                    setState(() {
-                      _bmi = weight / ((height / 100) * (height / 100));
-                    });
-                  } else {
-                    setState(() {
-                      _bmi = null;
-                    });
+                  if (double.parse(value) <= 0) {
+                    return 'Weight must be greater than 0.';
                   }
+
+                  return null;
                 },
-                child: Text('Calculate BMI'),
+                decoration: InputDecoration(
+                  labelText: 'Enter your weight (kg)',
+                  hintText: 'e.g. 70',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            if (_bmi != null)
-              Text(
-                'Your BMI is: ${_bmi!.toStringAsFixed(2)} \n Category: ${getBMICategory(_bmi!)}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              )
-            else
-              Text(
-                'Your BMI will be displayed here.',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+
+              const SizedBox(height: 20),
+
+              TextFormField(
+                controller: _heightController,
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  var regex = RegExp(r'^\d+(\.\d+)?$');
+
+                  if (value == null ||
+                      value.isEmpty ||
+                      !regex.hasMatch(value)) {
+                    return 'Please enter a valid number for height.';
+                  }
+
+                  if (double.parse(value) <= 0) {
+                    return 'Height must be greater than 0.';
+                  }
+
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Enter your height (cm)',
+                  hintText: 'e.g. 175',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
               ),
-            const SizedBox(height: 20),
-          ],
+
+              const SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      final double weight = double.parse(
+                        _weightController.text,
+                      );
+
+                      final double height = double.parse(
+                        _heightController.text,
+                      );
+
+                      setState(() {
+                        _bmi = weight / ((height / 100) * (height / 100));
+                      });
+                    }
+                  },
+                  child: const Text('Calculate BMI'),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              if (_bmi != null)
+                Text(
+                  'Your BMI is: ${_bmi!.toStringAsFixed(2)}\n'
+                  'Category: ${getBMICategory(_bmi!)}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              else
+                const Text(
+                  'Your BMI will be displayed here.',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
