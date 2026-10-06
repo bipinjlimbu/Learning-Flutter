@@ -78,10 +78,24 @@ class _HomePageState extends State<HomePage> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: () {
-                  final double weight =
-                      double.tryParse(_weightController.text) ?? 0;
-                  final double height =
-                      double.tryParse(_heightController.text) ?? 0;
+                  final double? weight = double.tryParse(
+                    _weightController.text,
+                  );
+                  final double? height = double.tryParse(
+                    _heightController.text,
+                  );
+
+                  if (weight == null || height == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        duration: const Duration(seconds: 2),
+                        content: Text(
+                          'Please enter valid numbers for weight and height.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
 
                   if (weight > 0 && height > 0) {
                     setState(() {
