@@ -107,6 +107,18 @@ class _HomePageState extends State<HomePage> {
                 'Your BMI will be displayed here.',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+            const SizedBox(height: 20),
+            if (_bmi != null)
+              Text(
+                _bmi! < 18.5
+                    ? 'You are underweight.'
+                    : _bmi! < 24.9
+                    ? 'You have a normal weight.'
+                    : _bmi! < 29.9
+                    ? 'You are overweight.'
+                    : 'You are obese.',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
           ],
         ),
       ),
