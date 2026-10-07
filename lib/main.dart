@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
-import '/parts/part3.dart';
+import 'pages/home_page.dart';
 
 void main() {
-  runApp(MaterialApp(home: Scaffold(body: const Part3())));
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter App',
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
+    );
+  }
 }
