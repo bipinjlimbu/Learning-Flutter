@@ -6,45 +6,40 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Home Page',
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'EcomFlutter',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.blue,
-        ),
-        body: ListView.builder(
-          itemCount: Product.products.length,
-          itemBuilder: (context, index) {
-            return Card(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Bech Denge', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue,
+      ),
+      body: ListView.builder(
+        itemCount: Product.products.length,
+        itemBuilder: (context, index) {
+          Product product = Product.products[index];
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              color: Colors.blue,
               child: Column(
                 children: [
                   Image.asset(
-                    Product.products[index].imagePath,
+                    product.imagePath,
                     width: 400,
                     height: 400,
                     fit: BoxFit.cover,
                   ),
                   Text(
-                    Product.products[index].title,
+                    product.title,
                     style: const TextStyle(
                       fontSize: 50,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    Product.products[index].price,
-                    style: const TextStyle(fontSize: 25),
-                  ),
+                  Text(product.price, style: const TextStyle(fontSize: 25)),
                 ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
