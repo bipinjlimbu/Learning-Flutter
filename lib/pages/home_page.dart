@@ -1,6 +1,8 @@
 import 'package:first_app/models/product_model.dart';
 import 'package:flutter/material.dart';
 
+import 'detail_page.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -15,27 +17,35 @@ class HomePage extends StatelessWidget {
         itemCount: Product.products.length,
         itemBuilder: (context, index) {
           Product product = Product.products[index];
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              color: Colors.blue,
-              child: Column(
-                children: [
-                  Image.asset(
-                    product.imagePath,
-                    width: 400,
-                    height: 400,
-                    fit: BoxFit.cover,
-                  ),
-                  Text(
-                    product.title,
-                    style: const TextStyle(
-                      fontSize: 50,
-                      fontWeight: FontWeight.bold,
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DetailPage()),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                color: Colors.blue,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      product.imagePath,
+                      width: 400,
+                      height: 400,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                  Text(product.price, style: const TextStyle(fontSize: 25)),
-                ],
+                    Text(
+                      product.title,
+                      style: const TextStyle(
+                        fontSize: 50,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(product.price, style: const TextStyle(fontSize: 25)),
+                  ],
+                ),
               ),
             ),
           );
