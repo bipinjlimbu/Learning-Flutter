@@ -31,7 +31,18 @@ class DetailPage extends StatelessWidget {
               product.title,
               style: const TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
             ),
-            Text(product.price, style: const TextStyle(fontSize: 25)),
+            Text(
+              product.price,
+              style: Theme.of(context).textTheme.bodyLarge
+                  ?.copyWith(color: Colors.yellow),
+            ),
+            Spacer(),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Back'),
+            ),
           ],
         ),
       ),
