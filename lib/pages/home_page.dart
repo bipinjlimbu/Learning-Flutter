@@ -21,7 +21,9 @@ class HomePage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DetailPage()),
+                MaterialPageRoute(
+                  builder: (context) => DetailPage(product: product),
+                ),
               );
             },
             child: Padding(
