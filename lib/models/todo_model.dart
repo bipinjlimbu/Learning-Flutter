@@ -5,5 +5,11 @@ class Todo {
 
   Todo({required this.id, required this.title, required this.isCompleted});
 
-  static List<Todo> todos = [];
+  Todo copyWith({String? id, String? title, bool? isCompleted}) {
+    return Todo(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
 }

@@ -16,24 +16,49 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Todo List')),
+      appBar: AppBar(
+        title: const Text('Todo List', style: TextStyle(color: Colors.yellow)),
+        backgroundColor: Colors.green,
+      ),
       body: ListView.builder(
         itemCount: todos.length,
         itemBuilder: (context, index) {
           final todo = todos[index];
-          return ListTile(
-            title: Text(todo.title),
-            trailing: Checkbox(
-              value: todo.isCompleted,
-              onChanged: (value) {
-                setState(() {
-                  todos[index] = Todo(
-                    id: todo.id,
-                    title: todo.title,
-                    isCompleted: value ?? false,
-                  );
-                });
-              },
+          return GestureDetector(
+            onTap: () {
+              createOrUpdateTodo(index, todo.title);
+            },
+            child: ListTile(
+              title: Text(todo.title),
+              trailing: Container(
+                color: Colors.red,
+                width: 100.0,
+                height: 48.0,
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        setState(() {
+                          todos.removeAt(index);
+                        });
+                      },
+                    ),
+                    Checkbox(
+                      value: todo.isCompleted,
+                      onChanged: (value) {
+                        setState(() {
+                          todos[index] = Todo(
+                            id: todo.id,
+                            title: todo.title,
+                            isCompleted: value ?? false,
+                          );
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         },
@@ -41,69 +66,58 @@ class _HomePageState extends State<HomePage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              String newTodoTitle = '';
-              return Center(
-                child: Material(
-                  color: Colors.transparent,
-                  child: Container(
-                    padding: const EdgeInsets.all(20.0),
-                    margin: const EdgeInsets.all(20.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 16.0,
-                      children: [
-                        const Text(
-                          'Add New Todo',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 16.0),
-                        TextField(
-                          onChanged: (value) {
-                            newTodoTitle = value;
-                          },
-                          decoration: const InputDecoration(
-                            labelText: 'Todo Title',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        const SizedBox(height: 16.0),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (newTodoTitle.isNotEmpty) {
-                              setState(() {
-                                todos.add(
-                                  Todo(
-                                    id: DateTime.now().toString(),
-                                    title: newTodoTitle,
-                                    isCompleted: false,
-                                  ),
-                                );
-                              });
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          child: const Text('Add'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
+          createOrUpdateTodo(null, '');
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  void createOrUpdateTodo(int? index, String title) {
+    final TextEditingController titleController = TextEditingController(
+      text: title,
+    );
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(index == null ? 'Create Todo' : 'Update Todo'),
+          content: TextField(
+            controller: titleController,
+            decoration: const InputDecoration(labelText: 'Title'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newTitle = titleController.text;
+                if (newTitle.isNotEmpty) {
+                  setState(() {
+                    if (index == null) {
+                      todos.add(
+                        Todo(
+                          id: DateTime.now().toString(),
+                          title: newTitle,
+                          isCompleted: false,
+                        ),
+                      );
+                    } else {
+                      todos[index] = todos[index].copyWith(title: newTitle);
+                    }
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
