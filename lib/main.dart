@@ -1,6 +1,5 @@
+import 'package:first_app/project3_pages/home_page.dart';
 import 'package:flutter/material.dart';
-
-import 'project2_pages/home_page.dart';
 
 void main() {
   runApp(MyApp());
