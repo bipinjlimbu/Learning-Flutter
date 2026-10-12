@@ -18,33 +18,54 @@ class WeatherModel {
   });
 
   factory WeatherModel.fromJson(Map<String, dynamic> map) {
-    final current = map['current'] as Map<String, dynamic>;
-    final daily = map['daily'] as Map<String, dynamic>;
+    final current = Map<String, dynamic>.from(map['current'] ?? {});
+    final daily = Map<String, dynamic>.from(map['daily'] ?? {});
 
-    final dates = daily['time'] as List<dynamic>;
-    final codes = daily['weather_code'] as List<dynamic>;
-    final maxTemps = daily['temperature_2m_max'] as List<dynamic>;
-    final minTemps = daily['temperature_2m_min'] as List<dynamic>;
+    final dates = daily['time'] as List? ?? [];
+    final codes = daily['weather_code'] as List? ?? [];
+    final maxTemps = daily['temperature_2m_max'] as List? ?? [];
+    final minTemps = daily['temperature_2m_min'] as List? ?? [];
 
-    final forecast = List<DailyWeather>.generate(
-      dates.length,
-      (index) => DailyWeather(
-        date: DateTime.parse(dates[index].toString()),
-        weatherCode: (codes[index] as num).toInt(),
-        maxTemperature: maxTemps[index] as num,
-        minTemperature: minTemps[index] as num,
-      ),
-    );
+    final forecast = <DailyWeather>[];
+
+    for (int i = 0; i < dates.length; i++) {
+      if (i >= codes.length || i >= maxTemps.length || i >= minTemps.length) {
+        break;
+      }
+
+      final date = DateTime.tryParse(dates[i].toString());
+      final code = codes[i];
+      final maxTemp = maxTemps[i];
+      final minTemp = minTemps[i];
+
+      if (date == null || code is! num || maxTemp is! num || minTemp is! num) {
+        continue;
+      }
+
+      forecast.add(
+        DailyWeather(
+          date: date,
+          weatherCode: code.toInt(),
+          maxTemperature: maxTemp,
+          minTemperature: minTemp,
+        ),
+      );
+    }
 
     return WeatherModel(
-      temperature: current['temperature_2m'] as num,
-      apparentTemperature: current['apparent_temperature'] as num,
-      weatherCode: (current['weather_code'] as num).toInt(),
-      humidity: (current['relative_humidity_2m'] as num).toInt(),
-      windSpeed: current['wind_speed_10m'] as num,
-      time: DateTime.tryParse(current['time'].toString()),
+      temperature: _number(current['temperature_2m']),
+      apparentTemperature: _number(current['apparent_temperature']),
+      weatherCode: _number(current['weather_code']).toInt(),
+      humidity: _number(current['relative_humidity_2m']).toInt(),
+      windSpeed: _number(current['wind_speed_10m']),
+      time: DateTime.tryParse(current['time']?.toString() ?? ''),
       dailyForecast: forecast,
     );
+  }
+
+  static num _number(dynamic value) {
+    if (value is num) return value;
+    return 0;
   }
 }
 
